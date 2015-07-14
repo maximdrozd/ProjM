@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="30">
+	<fx:Script>
+		<![CDATA[
+			import mx.core.FlexGlobals;
+			import mx.events.FlexEvent;
+			
+			protected var myFocus:Boolean = false;
+			
+			protected function textinput1_enterHandler(event:FlexEvent):void
+			{
+				FlexGlobals.topLevelApplication.send(textInp.text);
+				FlexGlobals.topLevelApplication.mainDisplayArea.addLine(">><font color='#FFFF00'>"+textInp.text+"</font>");
+				textInp.selectAll();
+			}
+			
+			public function setTextInputFocus():void {
+				myFocus = true;
+				textInp.setFocus();
+				textInp.selectAll();
+			}
+			
+			public function unsetTextInputFocus():void {
+				myFocus = false;
+			}
+			
+			public function hasFocus():Boolean {
+				return myFocus;
+			}
+			
+			protected function textInp_clickHandler(event:MouseEvent):void
+			{
+				myFocus = true;
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:TextInput id="textInp" y="0" left="0" right="0" borderVisible="false" contentBackgroundColor="#000000" color="#FFFFFF" enter="textinput1_enterHandler(event)" click="textInp_clickHandler(event)"/>
+</s:Group>

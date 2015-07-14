@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import flashx.textLayout.formats.WhiteSpaceCollapse;
+			
+			import mx.events.FlexEvent;
+			import spark.components.VScrollBar;
+			import spark.utils.TextFlowUtil;
+			import flashx.textLayout.conversion.*;
+			import flashx.textLayout.formats.TextLayoutFormat;
+			import flashx.textLayout.elements.Configuration;
+			
+			private var textHistory:String = "";
+			private var lineTerminator:String = "<br/>";
+			public var bufferMin:Number = 5000;
+			public var bufferMax:Number = 10000;
+			
+			public function addLine(line:String):void{
+				var color:String = "#CCCCCC";
+				var prefix:String = lineTerminator+"<span color=\""+color+"\">"+line+"</span>";
+				textHistory += prefix;
+				textHistory += "("+textHistory.length+")";
+				if(textHistory.length > bufferMax){
+					
+					textHistory = textHistory.substr(bufferMin, textHistory.length);
+					
+					textHistory = textHistory.substr(textHistory.indexOf(lineTerminator)+lineTerminator.length, textHistory.length);
+					
+				}
+				//myTextArea.textFlow = TextFlowUtil.importFromString(textHistory, WhiteSpaceCollapse.PRESERVE);
+				//myTextArea.textFlow = TextConverter.importToFlow(textHistory, TextConverter.TEXT_FIELD_HTML_FORMAT);
+				var format:TextLayoutFormat = new TextLayoutFormat();
+				format.whiteSpaceCollapse = WhiteSpaceCollapse.PRESERVE;
+				var config:Configuration = new Configuration();
+				config.textFlowInitialFormat = format;
+				
+				var importer:ITextImporter = TextConverter.getImporter(TextConverter.TEXT_FIELD_HTML_FORMAT, config);
+				myTextArea.textFlow = importer.importToFlow(textHistory);
+			}
+			
+			private function scrollToBottom(event:Event):void{
+				//myTextArea.scroller.verticalScrollBar.value = myTextArea.scroller.verticalScrollBar.maxHeight;
+				var scrollBar:VScrollBar = myTextArea.scroller.verticalScrollBar;
+				scrollBar.value = scrollBar.maximum;
+				myTextArea.validateNow();
+				
+				if (scrollBar.value != scrollBar.maximum) {
+					scrollBar.value = scrollBar.maximum;
+					myTextArea.validateNow();
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	<s:TextArea id="myTextArea" left="0" right="0" top="0" bottom="0" color="#FFFFFF"
+				contentBackgroundColor="#000000" editable="false" fontFamily="Courier New"
+				updateComplete="scrollToBottom(event)" change="scrollToBottom(event)" valueCommit="scrollToBottom(event)"/>
+</s:Group>

@@ -1,0 +1,11 @@
+F1=call::initConnection
+NUMPAD_1=умение1
+NUMPAD_2=умение2
+NUMPAD_3=умение3
+NUMPAD_4=west
+NUMPAD_5=south
+NUMPAD_6=east
+NUMPAD_7=down
+NUMPAD_8=north
+NUMPAD_9=up
+NUMPAD_0=flee

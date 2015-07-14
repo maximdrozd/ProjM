@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009"
+					   xmlns:s="library://ns.adobe.com/flex/spark"
+					   xmlns:mx="library://ns.adobe.com/flex/mx"
+					   backgroundColor="#999999" xmlns:local="*" showStatusBar="false" creationComplete="windowedapplication1_creationCompleteHandler(event)">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script source="HotkeyDispatcher.as"></fx:Script>
+	<fx:Script source="communication.as"></fx:Script>
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			import mx.core.FlexGlobals;
+			import flash.filesystem.FileMode;
+			import flash.filesystem.FileStream;
+			import flash.filesystem.File;
+			
+			protected var ticker:Timer;
+			protected var hotkeys:Array;
+			protected var hotkeyBindings:Dictionary;
+			
+			protected function windowedapplication1_creationCompleteHandler(event:FlexEvent):void
+			{
+				ticker = new Timer(500);
+				hotkeys = new Array();
+				hotkeyBindings = new Dictionary();
+				
+				ticker.addEventListener(TimerEvent.TIMER, onTick);
+				
+				//ticker.start();
+				
+				tickerProgressBar.initWithTime(300);
+				
+//				for(var i:int = 0; i < 21; i++){
+//					var hk:Hotkey = new Hotkey();
+//					hk.key = String.fromCharCode(i+70);
+//					hotkeyPanel.addElement(hk);
+//					hotkeyBindings[hk.key] = "sending this to MUD "+hk.key;
+//					hotkeys.push(hk);
+//				}
+				
+				var myFile:File = File.applicationDirectory;
+				myFile = myFile.resolvePath("settings/hotkeys.txt"); // Point it to an actual file
+				
+				var fileStream:FileStream = new FileStream(); // Create our file stream
+				fileStream.open(myFile, FileMode.READ);
+				
+				var fileContents:String = fileStream.readUTFBytes(fileStream.bytesAvailable); // Read the contens of the 
+				var hotkeySettingsArray:Array = fileContents.split("\n");
+				
+				for(var i:int = 0; i < hotkeySettingsArray.length; i++){
+					var hkSetting:Array = hotkeySettingsArray[i].toString().split("=");
+					var hk:Hotkey = new Hotkey();
+					hk.key = hkSetting[0];
+					hotkeyPanel.addElement(hk);
+					hotkeyBindings[hk.key] = hkSetting[1];
+					hotkeys.push(hk);
+				}
+				
+				fileStream.close(); // Clean up and close the file stream
+				
+				applicationContainer.addEventListener(KeyboardEvent.KEY_DOWN, keyHandlerDown);
+				applicationContainer.addEventListener(KeyboardEvent.KEY_UP, keyHandlerUp);
+				
+				mainInput.setFocus();
+				
+				//initConnection();
+			}
+			
+			protected function onTick(event:TimerEvent):void{
+				var d:Date = new Date();
+				mainDisplayArea.addLine(d.toString()+d.toString()+d.toString()+d.toString());
+			}
+			
+		]]>
+	</fx:Script>
+	<s:Group id="applicationContainer" left="0" right="0" top="0" bottom="0">
+		<local:DisplayArea id="mainDisplayArea" top="0" bottom="200" width="600" bufferMax="10000"
+						   bufferMin="5000" horizontalCenter="0"/>
+		<local:InputField id="mainInput" bottom="170" width="600" horizontalCenter="0"/>
+		<local:IconProgressBar id="tickerProgressBar" bottom="150" width="600" horizontalCenter="0"/>
+		<s:TileGroup id="hotkeyPanel" bottom="0" width="600" height="140" horizontalAlign="justify"
+					 horizontalCenter="0" horizontalGap="2" verticalGap="2">
+		</s:TileGroup>
+	</s:Group>
+	<local:TriggerPanel left="0" top="0" width="25%">
+	</local:TriggerPanel>
+</s:WindowedApplication>

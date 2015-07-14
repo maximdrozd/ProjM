@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="50" height="50" creationComplete="group1_creationCompleteHandler(event)">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			import mx.events.FlexEvent;
+			import mx.core.FlexGlobals;
+			
+			[Bindable]
+			public var key:String;
+			[Bindable]
+			private var bgcolor:Number = 0x999999;
+			protected function group1_creationCompleteHandler(event:FlexEvent):void
+			{
+				//FlexGlobals.topLevelApplication.addEventListener(KeyboardEvent.KEY_UP, keyHandler);
+				//Alert.show(key);
+			}
+			
+			public function activate():void{
+				bgcolor = 0xFFCC66;
+			}
+			
+			public function deactivate():void{
+				bgcolor = 0x999999;
+			}
+			
+			protected function buttonBG_clickHandler(event:MouseEvent):void
+			{
+				FlexGlobals.topLevelApplication.handleHotkeyAction(key);
+			}
+			
+			protected function buttonBG_mouseUpHandler(event:MouseEvent):void
+			{
+				this.deactivate();	
+			}
+			
+			protected function buttonBG_mouseDownHandler(event:MouseEvent):void
+			{
+				this.activate();
+			}
+			
+		]]>
+	</fx:Script>
+	<s:BorderContainer id="buttonBG" left="0" right="0" top="0" bottom="0" backgroundColor="{bgcolor}" 
+					   click="buttonBG_clickHandler(event)" mouseUp="buttonBG_mouseUpHandler(event)" 
+					   mouseDown="buttonBG_mouseDownHandler(event)">
+		<s:Image id="keyIcon" left="2" right="2" top="2" bottom="2" scaleMode="letterbox"
+				 smooth="true" smoothingQuality="high"
+				 source="icons/xp_icon.jpg"/>
+		<s:Label id="keyLabel" right="5" top="5" backgroundColor="#ECECEC" fontSize="14" text="{key}"
+				 textAlign="right" maxWidth="40" maxHeight="14"/>
+	</s:BorderContainer>
+</s:Group>

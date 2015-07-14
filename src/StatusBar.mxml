@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="220" height="50">
+	<fx:Script>
+		<![CDATA[
+			[Bindable]
+			public var barcolor:Number = 0xF4FFD4;
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<mx:ProgressBar left="0" right="0" top="0" bottom="0" fontSize="9" labelPlacement="center" chromeColor="{barcolor}" label=""/>
+	<s:Label left="0" right="0" top="0" height="24" fontSize="16" fontWeight="normal" text="Label"
+			 textAlign="center" verticalAlign="bottom"/>
+	<s:Label left="0" right="0" bottom="0" height="24" fontSize="12" text="Label" textAlign="center"
+			 verticalAlign="middle"/>
+</s:Group>

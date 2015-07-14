@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300" creationComplete="group1_creationCompleteHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.*;
+			
+			import spark.events.GridEvent;
+			
+			[Bindable]
+			public var triggers:Array;
+			[Bindable]
+			public var dp:ArrayCollection;
+			
+			protected function group1_creationCompleteHandler(event:FlexEvent):void
+			{
+				dp=new ArrayCollection(triggers);
+				flexDataGrid.dataProvider=dp;
+			}
+			
+			protected function flexDataGrid_gridClickHandler(event:GridEvent):void
+			{
+				var clickColumn:String = String(event.columnIndex); 
+				var clickRow:String = String(event.rowIndex); 
+				var eventType:String = event.type;
+				var selectionType:String = String(event.grid.selectionMode);
+				if(clickColumn == "5" && clickRow != "-1"){
+					event.item.enabled = !event.item.enabled;
+					dp.refresh();
+				}
+				if(clickColumn == "6" && clickRow != "-1"){
+					dp.removeItemAt(dp.getItemIndex(event.item));
+					dp.refresh();
+					trace('removed');
+				}
+			}
+			
+			protected function loadSettings(event:MouseEvent):void{
+				var myFile:File = File.applicationDirectory.resolvePath("settings/settings.json");
+				
+				var fileStream:FileStream = new FileStream(); // Create our file stream
+				fileStream.open(myFile, FileMode.READ);
+				
+				var fileContents:String = fileStream.readUTFBytes(fileStream.bytesAvailable); // Read the contens of the 
+				var settingsObject:Object = JSON.parse(fileContents);
+				
+				triggers = new Array();
+				triggers = settingsObject.triggers;
+				triggers.sortOn(["priority"], Array.DESCENDING);
+				
+				dp = new ArrayCollection(triggers);
+				
+				flexDataGrid.dataProvider=dp;
+			}
+			
+			protected function saveSettings(event:MouseEvent):void{
+				var o:Object = new Object();
+				o.triggers = triggers;
+				var json:String = JSON.stringify(o);
+				
+				var file:String = File.applicationDirectory.resolvePath("settings/settings.json").nativePath;
+				var someFile:File = new File(file);
+				var fileStream:FileStream = new FileStream();
+				fileStream.open(someFile, FileMode.WRITE);
+				fileStream.writeUTFBytes(json);
+			}
+			
+			protected function addRow(event:MouseEvent):void{
+				var o:Object = new Object();
+				o.match = "New Match";
+				o.action = "New Action";
+				o.substitute = "New Sub";
+				o.enabled = false;
+				o.priority = 0;
+				o.group = "default";
+				dp.addItem(o);
+			}
+			
+			private function traceObject(o:Object):void{
+				trace('    ');
+				for(var val:* in o){
+					if(typeof(o[val]) == "object"){
+						traceObject(o[val]);
+					} else {
+						trace('   [' + typeof(o[val]) + '] ' + val + ' => ' + o[val]);
+					}
+				}
+				trace('    ');
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:DataGrid left="0" right="0" top="25" bottom="0" requestedRowCount="4" id="flexDataGrid" gridClick="flexDataGrid_gridClickHandler(event)" editable="true">
+		<s:columns>
+			<s:ArrayList>
+				<s:GridColumn dataField="match" headerText="RegExp"></s:GridColumn>
+				<s:GridColumn dataField="action" headerText="Act"></s:GridColumn>
+				<s:GridColumn dataField="substitute" headerText="Sub"></s:GridColumn>
+				<s:GridColumn dataField="group" headerText="Grp" width="50"></s:GridColumn>
+				<s:GridColumn dataField="priority" headerText="Pr"></s:GridColumn>
+				<s:GridColumn dataField="enabled" headerText="E" itemRenderer="helpers.itemRendererActiveIcon" editable="false" width="30"></s:GridColumn>
+				<s:GridColumn headerText="R" itemRenderer="helpers.itemRendererRemoveTrigger" width="30" editable="false"></s:GridColumn>
+			</s:ArrayList>
+		</s:columns>
+	</s:DataGrid>
+	<s:Button right="0" top="0" width="63" label="Save" click="saveSettings(event)"/>
+	<s:Button right="70" top="0" width="63" label="Add" click="addRow(event)"/>
+	<s:Button left="0" top="0" width="63" label="Load" click="loadSettings(event)"/>
+</s:Group>

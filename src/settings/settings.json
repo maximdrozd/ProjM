@@ -1,0 +1,52 @@
+{
+    "triggers": [
+        {
+            "match": "MatchString1",
+            "action": "call::matchFound",
+            "substitute": "<font color='#FF0000'>MS1</font>",
+            "enabled": true,
+            "priority": 900,
+            "group": "default"
+        },
+        {
+            "match": "MatchString2",
+            "action": "call::matchFound",
+            "substitute": "<font color='#FF0000'>MS1</font>",
+            "enabled": true,
+            "priority": 400,
+            "group": "default"
+        },
+        {
+            "match": "MatchString3",
+            "action": "call::matchFound",
+            "substitute": "<font color='#FF0000'>MS1</font>",
+            "enabled": true,
+            "priority": 100,
+            "group": "default"
+        },
+        {
+            "match": "MatchString4",
+            "action": "call::matchFound",
+            "substitute": "<font color='#FF0000'>MS1</font>",
+            "enabled": true,
+            "priority": 300,
+            "group": "default"
+        },
+        {
+            "match": "MatchString5",
+            "action": "call::matchFound",
+            "substitute": "<font color='#FF0000'>MS1</font>",
+            "enabled": true,
+            "priority": 800,
+            "group": "default"
+        },
+        {
+            "match": "MatchString6",
+            "action": "call::matchFound",
+            "substitute": "<font color='#FF0000'>MS1</font>",
+            "enabled": true,
+            "priority": 900,
+            "group": "default"
+        }
+    ]
+}

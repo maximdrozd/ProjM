@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="300" height="24" resize="group1_resizeHandler(event)" creationComplete="group1_creationCompleteHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import flash.globalization.NumberFormatter;
+			
+			import mx.events.FlexEvent;
+			import mx.events.ResizeEvent;
+			
+			import org.osmf.events.TimeEvent;
+			
+			[Bindable]
+			public var direction:String = "right";
+			[Bindable]
+			public var barcolor:Number = 0xF4FFD4;
+			
+			private var ticker:Timer;
+			private var maxTicks:Number = 0;
+			private var currentTicks:Number = 0;
+			public var tickerStep:Number = 100;
+			
+			protected function group1_resizeHandler(event:ResizeEvent):void
+			{
+				icon.width = this.height;
+				bar.width = this.width - icon.width;
+			}
+			
+			public function initWithTime(time:Number):void {
+				maxTicks = time;
+				ticker = new Timer(tickerStep, time);
+				ticker.addEventListener(TimerEvent.TIMER, onTick);
+				ticker.addEventListener(TimerEvent.TIMER_COMPLETE, onComplete);
+				ticker.start();
+			}
+			
+			public function start():void{
+				ticker.start();
+			}
+			
+			public function stop():void{
+				ticker.stop();
+			}
+			
+			public function reset():void{
+				ticker.reset();
+			}
+			
+			protected function onTick(event:TimerEvent):void{
+				bar.setProgress(maxTicks - currentTicks, maxTicks);
+				bar.label = numberFormatter.format((maxTicks - currentTicks) * tickerStep / 1000) + "s";
+				currentTicks++;
+			}
+			
+			protected function onComplete(event:TimerEvent):void{
+				bar.label = "0.0s";
+			}
+			
+			protected function group1_creationCompleteHandler(event:FlexEvent):void
+			{
+				group1_resizeHandler(null);
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<mx:NumberFormatter id="numberFormatter" precision="1" useNegativeSign="true"/>
+	</fx:Declarations>
+	<s:Image id="icon" left="0" top="0" bottom="0" width="24"/>
+	<mx:ProgressBar id="bar" right="0" top="0" bottom="0" width="277" chromeColor="{barcolor}"
+					direction="{direction}" labelPlacement="center" mode="manual"/>
+</s:Group>
